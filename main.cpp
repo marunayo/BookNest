@@ -1,22 +1,35 @@
 #include <stdio.h>
-#include "book.h"
+#include "library.h"
 
 int main() {
     book books[100]; // Misalnya, batasi jumlah maksimum buku
+    int choice;
     int bookTotal = 0;
 
     // Panggil fungsi getBookCollection
     getBookCollection(books, bookTotal);
 
     // Menampilkan data yang telah disimpan dalam array of struct
-    for (int i = 0; i < bookTotal; i++) {
-        printf("Buku %d:\n", i + 1);
-        printf("ID\t: %s\n", books[i].bookID);
-        printf("Judul\t: %s\n", books[i].title);
-        printf("Penulis\t: %s\n", books[i].author);
-        printf("\n");
+    showBookCollection(books, bookTotal);
+
+    displayHome();
+    printf("Silahkan pilih opsi 1-3: ");
+    scanf(" %d", &choice);
+
+    switch (choice) {
+        case 1:
+            registMember();
+            break;
+        case 2:
+            displayMainMenu();
+            break;
+        case 3:
+            showBookCollection(books, bookTotal);
+            break;
+        default:
+            printf("Pilihan anda tidak valid, silahkan pilih 1-3");
+            break;
     }
 
     return 0;
 }
-
