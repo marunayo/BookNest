@@ -22,15 +22,33 @@ int main() {
                 break;
             case 2:
                 if (loginMember()) {
-                    displayMainMenu();
+                    do {
+                        displayMainMenu();
+                        printf("Silahkan pilih opsi 1-4: ");
+                        scanf(" %d", &choice);
+
+                        switch (choice) {
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+                            case 3:
+                                searchBook();
+                                break;
+                            case 4:
+                                exit(0);
+                            default:
+                                printf("Pilihan anda tidak valid, silahkan pilih 1-4\n");
+                        }
+
+                        printf("Kembali ke menu utama? (Y/N): ");
+                        scanf(" %c", &menu);
+                    } while (menu == 'Y' || menu == 'y');
                 } else {
                     printf("Login gagal. Silahkan coba lagi atau kembali ke menu utama.\n");
                 }
                 break;
             case 3:
-                showBookCollection(books, bookTotal);
-                break;
-            case 4:
             	exit(0);
             default:
                 printf("Pilihan anda tidak valid, silahkan pilih 1-3\n");
