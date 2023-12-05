@@ -1,1 +1,0 @@
-            printf("Batas maksimum buku tercapai\n");
