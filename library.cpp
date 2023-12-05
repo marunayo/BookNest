@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "library.h"
 
 int memberCount = 1;
@@ -26,11 +27,17 @@ void displayMainMenu() {
     printf("==============================\n");
 }
 
-void displayBook() {
+void displayBookMenu() {
+    system("cls");
     printf("=====================================\n");
     printf("              CARI BUKU              \n");
     printf("=====================================\n");
+}
 
+void displayBorrowBook() {
+    system("cls");
+    printf("=====================================\n");
+    printf("           PEMINJAMAN BUKU           \n");
     printf("=====================================\n");
 }
 
@@ -107,3 +114,16 @@ void showBookCollection(book books[], int bookTotal) {
         printf("\n");
     }
 }
+
+void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
+    // Checking if the bookID exist in DB
+    for (int i = 0; i < bookTotal; i++) {
+        if (strcmp(choiceBook, books[i].bookID) == 0) {
+            printf("ADA CUY");
+            return;
+        } 
+    }
+
+    printf("GAK ADA CUY");
+}
+

@@ -17,6 +17,8 @@ typedef struct
 // Menu Modules
 void displayMainMenu();
 void displayHome();
+void displayBookMenu();
+void displayBorrowBook();
 
 // User Modules
 void registMember();
@@ -24,5 +26,6 @@ void registMember();
 // Book Modules
 void getBookCollection(book books[], int &bookTotal);
 void showBookCollection(book books[], int bookTotal);
+void checkBorrowBook(book books[], char *choiceBook, int bookTotal);
 
 #endif //BOOKNEST_LIBRARY_H
