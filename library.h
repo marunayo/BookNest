@@ -20,6 +20,7 @@ void displayHome();
 
 // User Modules
 void registMember();
+bool loginMember();
 
 // Book Modules
 void getBookCollection(book books[], int &bookTotal);
