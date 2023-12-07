@@ -1,36 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "library.h"
 
 int memberCount = 1;
 
-// Menu Modules
-//void displayHome() {
-//    printf("=====================================\n");
-//    printf("      Selamat Datang di BookNest     \n");
-//    printf("=====================================\n");
-//    printf("1. Registrasi Member\n");
-//    printf("2. Masuk sebagai Member\n");
-//    printf("3. Keluar\n");
-//    printf("=====================================\n");
-//}
-//
-//void displayMainMenu() {
-//    printf("==============================\n");
-//    printf("          MAIN MENU           \n");
-//    printf("==============================\n");
-//    printf("1. Peminjaman Buku\n");
-//    printf("2. Pengembalian Buku\n");
-//    printf("3. Cari Buku\n");
-//    printf("4. Keluar\n");
-//    printf("==============================\n");
-//}
-
 void displayBookMenu() {
-    system("cls");
     printf("=====================================\n");
     printf("              CARI BUKU              \n");
+    printf("=====================================\n");
+
     printf("=====================================\n");
 }
 
@@ -41,46 +21,31 @@ void displayBorrowBook() {
     printf("=====================================\n");
 }
 
-// User Modules
-//void registMember() {
-//    FILE *f_member;
-//    Member member;
-//
-//    system("cls");
-//
-//    if ((f_member = fopen("memberData.txt", "ab+")) == NULL) {
-//        fputs("File tidak dapat dibuka!", stderr);
-//        exit(1);
-//    }
-//
-//    printf("=====================================\n");
-//    printf("       MEMBER REGISTRATION FORM      \n");
-//    printf("=====================================\n");
-//
-//    printf("Username: ");
-//    scanf(" %s", member.userName);
-//    fflush(stdin);
-//
-//    printf("Password: ");
-//    scanf("%s", member.Password);
-//    fflush(stdin);
-//
-//    sprintf(member.idMember, "BK%i", memberCount);
-//    memberCount++;
-//    fflush(stdin);
-//    printf("%s", member.idMember);
-//
-//    if (fwrite(&member, sizeof(Member), 1, f_member) != 1) {
-//        printf("Error writing to the file\n");
-//        fclose(f_member);
-//        exit(1);
-//    }
-//
-//    fclose(f_member);
-//
-//    printf("\nRegistrasi Berhasil!\n");
-//    printf("Member ID kamu %s\n", member.idMember);
-//}
+void doBorrowBook(char *choiceBook, char *userName) {
+    FILE *ft;
+    FILE *ft_user;
+    char transactionID[10];
+
+    if ((ft = fopen("transactions.txt", "a+")) == NULL) {
+        fputs("File tidak dapat dibuka!", stderr);
+        exit(1);
+    }
+    // if ((ft_user = fopen("tramsactions.txt", "a+")) == NULL) {
+    //     fputs("File tidak dapat dibuka!", stderr);
+    //     exit(1);
+    // }
+
+
+    sprintf(transactionID, "TRBK%05i", rand() % 100000);
+    fflush(stdin);
+    
+	fprintf(ft, "%s %s %s\n", transactionID, userName, choiceBook);
+	
+    fclose(ft);
+
+    printf("\nPinjam Buku Berhasil!\n");
+    printf("Transaction ID pinjam buku kamu %s\n", transactionID);
+}
 
 // Book Modules
 void getBookCollection(book books[], int &bookTotal) {
@@ -127,38 +92,22 @@ void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
     printf("Maaf, Buku kamu tidak tersedia :(");
 }
 
-void doBorrowBook(char *choiceBook, char *userName) {
-    FILE *ft;
-    FILE *ft_user;
-    char transactionID[10];
-
-    if ((ft = fopen("transactions.txt", "a+")) == NULL) {
-        fputs("File tidak dapat dibuka!", stderr);
-        exit(1);
+int containsIgnoreCase(const char *data, const char *keyword) {
+    while (*data && *keyword) {
+        if (tolower((unsigned char)*data) != tolower((unsigned char)*keyword)) {
+            return 0; 
+        }
+        data++;
+        keyword++;
     }
-    // if ((ft_user = fopen("tramsactions.txt", "a+")) == NULL) {
-    //     fputs("File tidak dapat dibuka!", stderr);
-    //     exit(1);
-    // }
 
-
-    sprintf(transactionID, "TRBK%05i", rand() % 100000);
-    fflush(stdin);
-    
-	fprintf(ft, "%s %s %s\n", transactionID, userName, choiceBook);
-	
-    fclose(ft);
-
-    printf("\nPinjam Buku Berhasil!\n");
-    printf("Transaction ID pinjam buku kamu %s\n", transactionID);
+    return (*keyword == '\0');  
 }
 
-void searchBook() {
+void searchBook(book *matchingBooks, int *matchCount) {
     char keyword[50];
     FILE *bookDB;
     book Book;
-    book *matchingBooks;
-    int matchCount;
 
     system("cls");
 
@@ -169,38 +118,37 @@ void searchBook() {
     }
 
     printf("=====================================\n");
-    printf("       ~Cari Koleksi BookNest~       \n");
+    printf("        Cari Koleksi BookNest        \n");
     printf("=====================================\n");
     printf("Masukkan kata kunci pencarian: ");
     scanf(" %s", keyword);
     fflush(stdin);
 
-    matchingBooks = (book *)calloc(100, sizeof(book));  // Adjust the size as needed
-    matchCount = 0;
-
     while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']'", Book.bookID, Book.title, Book.author) != EOF) {
-        if (strstr(keyword, Book.bookID) != NULL || strstr(keyword, Book.author) != NULL || strstr(keyword, Book.title) != NULL) {
-            strcpy(matchingBooks[matchCount].bookID, Book.bookID);
-            strcpy(matchingBooks[matchCount].title, Book.title);
-            strcpy(matchingBooks[matchCount].author, Book.author);
-            matchCount++;
+        printf("Processing Book: ID=%s, Title=%s, Author=%s\n", Book.bookID, Book.title, Book.author);
+        if (containsIgnoreCase(Book.bookID, keyword) ||
+            containsIgnoreCase(Book.title, keyword) ||
+            containsIgnoreCase(Book.author, keyword)) {
+            strcpy(matchingBooks[*matchCount].bookID, Book.bookID);
+            strcpy(matchingBooks[*matchCount].title, Book.title);
+            strcpy(matchingBooks[*matchCount].author, Book.author);
+            (*matchCount)++;
         }
     }
-
     fclose(bookDB);
+}
 
+void searchResult(book *matchingBooks, int *matchCount) {
+    system("cls");
     printf("=====================================\n");
     printf("       ~Hasil Pencarian Anda~       \n");
     printf("=====================================\n");
-    for (int i = 0; i < matchCount; i++) {
-        system("cls");
+    for (int i = 0; i < *matchCount; i++) {
         printf("Book ID: %s\n", matchingBooks[i].bookID);
         printf("Title: %s\n", matchingBooks[i].title);
         printf("Author: %s\n", matchingBooks[i].author);
         printf("=====================================\n");
     }
-
-    free(matchingBooks);
 }
 
 float calculatePenalty(int days) {
@@ -209,3 +157,4 @@ float calculatePenalty(int days) {
 		return 1000 * i;
 	}
 }
+

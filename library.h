@@ -2,7 +2,7 @@
 #define library_h
 
 typedef struct {
-    char idMember[5];
+    char idMember[8];
     char userName[50];
     char Password[8];
 } Member;
@@ -30,6 +30,7 @@ void showBookCollection(book books[], int bookTotal);
 void checkBorrowBook(book books[], char *choiceBook, int bookTotal);
 void doBorrowBook(char *choiceBook, char *userName);
 float calculatePenalty(int days);
-void searchBook();
+void searchBook(book *matchingBooks, int *matchCount);
+void searchResult(book *matchingBooks, int *matchCount);
 
 #endif //BOOKNEST_LIBRARY_H
