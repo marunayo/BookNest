@@ -1,34 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "library.h"
 
+bool checkPassword(char *password) {
+    int i, length, digit_count, lower_case_count, upper_case_count;
 
-void displayHome() {
-    printf("=====================================\n");
-    printf("      Selamat Datang di BookNest     \n");
-    printf("=====================================\n");
-    printf("1. Registrasi Member\n");
-    printf("2. Masuk sebagai Member\n");
-    printf("3. Keluar\n");
-    printf("=====================================\n");
-}
+    length = strlen(password);
 
-void displayMainMenu() {
-	system("cls");
-    printf("==============================\n");
-    printf("          MAIN MENU           \n");
-    printf("==============================\n");
-    printf("1. Peminjaman Buku\n");
-    printf("2. Pengembalian Buku\n");
-    printf("3. Cari Buku\n");
-    printf("4. Keluar\n");
-    printf("==============================\n");
+    digit_count = 0;
+    lower_case_count = 0;
+    upper_case_count = 0;
+
+    // check uppercase, lowercase, and number
+    for (i = 0; i < length; i++) {
+        if (password[i] >= 'a' && password[i] <= 'z') ++lower_case_count;
+        if (password[i] >= 'A' && password[i] <= 'Z') ++upper_case_count;
+        if (password[i] >= '0' && password[i] <= '9') ++digit_count;
+    }
+
+    if (length < 1 || length > 8) {
+        return false;
+    } else if (lower_case_count > 0 && upper_case_count > 0 && digit_count > 0) {
+        return true;
+    }
 }
 
 void registMember() {
     FILE *f_member;
-    Member member;
+    Member member, f_members;
+    bool usernameExists;
 
     system("cls");
 
@@ -37,35 +39,58 @@ void registMember() {
         exit(1);
     }
 
-    printf("=====================================\n");
-    printf("      Registrasi Member BookNest     \n");
-    printf("=====================================\n");
+    for (;;) {
+        printf("=====================================\n");
+        printf("      Registrasi Member BookNest     \n");
+        printf("=====================================\n");
 
-    printf("Username: ");
-    scanf(" %s", member.userName);
-    fflush(stdin);
+        printf("Username: ");
+        scanf(" %s", member.userName);
+        fflush(stdin);
 
-    printf("Password: ");
-    scanf("%s", member.Password);
-    fflush(stdin);
+        printf("\n");
+        printf("Password: ");
 
-    sprintf(member.idMember, "BK%i", rand());
-    fflush(stdin);
-    printf("%s", member.idMember);
-    
-	fprintf(f_member, "%s %s %s\n", member.idMember, member.userName, member.Password);
-	
+        fgets(member.Password, 9, stdin);
+        fflush(stdin);
+
+        srand ( time(NULL) );
+        sprintf(member.idMember, "BK%i", rand()%100);
+
+        if(checkPassword(member.Password)) {
+            fseek(f_member, 0, SEEK_SET);
+
+            usernameExists = false;
+
+            while (fscanf(f_member, " %s %s %s", f_members.idMember, f_members.userName, f_members.Password) != EOF) {
+                if (strcmp(f_members.userName, member.userName) == 0) {
+                    printf("\nUsername sudah ada!\n");
+                    usernameExists = true;
+                    break;
+                }
+            }
+
+            if (!usernameExists) {
+                fprintf(f_member, "%s %s %s\n", member.idMember, member.userName, member.Password);
+                printf("\nRegistrasi Berhasil!\n");
+                printf("Member ID kamu %s\n", member.idMember);
+                break;
+            }
+
+        } else {
+            printf("Password tidak valid. Pastikan memenuhi aturan kompleksitas.\n");
+            break;
+        }
+    }
+
     fclose(f_member);
-
-    printf("\nRegistrasi Berhasil!\n");
-    printf("Member ID kamu %s\n", member.idMember);
-
 }
 
+
+
 bool loginMember() {
-    char username[50], password[8];
     FILE *f_member;
-    Member member;
+    Member member, input;
     bool found;
 
     if ((f_member = fopen("memberData.txt", "r")) == NULL) {
@@ -80,10 +105,10 @@ bool loginMember() {
         printf("           Masuk ke BookNest         \n");
         printf("=====================================\n");
         printf("Username: ");
-        scanf(" %s", username);
+        scanf(" %s", input.userName);
         while (getchar() != '\n');
         printf("Password: ");
-        scanf(" %s", password);
+        scanf(" %s", input.Password);
         while (getchar() != '\n');
 
         found = false;
@@ -91,7 +116,7 @@ bool loginMember() {
         rewind(f_member);
 
         while (fscanf(f_member, " %s %s %s", member.idMember, member.userName, member.Password) != EOF) {
-            if (strcmp(username, member.userName) == 0 && strcmp(password, member.Password) == 0) {
+            if (strcmp(input.userName, member.userName) == 0 && strcmp(input.Password, member.Password) == 0) {
                 printf("\nBerhasil masuk!\n");
                 found = true;
                 break;
