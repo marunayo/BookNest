@@ -12,6 +12,7 @@ typedef struct
     char bookID[7];
     char title[50];
     char author[50];
+    char status;
 } book;
 
 // Menu Modules
