@@ -20,6 +20,7 @@ void displayMainMenu() {
     printf("1. Peminjaman Buku\n");
     printf("2. Pengembalian Buku\n");
     printf("3. Cari Buku\n");
-    printf("4. Keluar\n");
+    printf("4. Lihat semua koleksi\n");
+    printf("5. Keluar\n");
     printf("==============================\n");
 }

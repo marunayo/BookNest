@@ -29,7 +29,9 @@ int main() {
                             case 1:
                                 break;
                             case 2:
-                            	Book = (book *)calloc(100, sizeof(book)); 
+                                break;
+                            case 3:
+                                Book = (book *)calloc(100, sizeof(book)); 
                                 matchCount = 0;
                                 searchBook(Book, &matchCount);
                                 if (matchCount > 0) {
@@ -39,11 +41,11 @@ int main() {
                                 }
                                 free(Book);       
                                 break;
-                            case 3:
+                            case 4:
                                 displayBookMenu();
                                 showBookCollection(books, bookTotal);
                                 break;
-                            case 4:
+                            case 5:
                                 exit(0);
                             default:
                                 printf("Pilihan anda tidak valid, silahkan pilih 1-4\n");

@@ -1,0 +1,3 @@
+D:/devJourney/C/TugasBesar/BookNest/cmake-build-debug/CMakeFiles/BookNest.dir
+D:/devJourney/C/TugasBesar/BookNest/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/devJourney/C/TugasBesar/BookNest/cmake-build-debug/CMakeFiles/rebuild_cache.dir

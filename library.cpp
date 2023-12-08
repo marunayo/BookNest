@@ -141,7 +141,7 @@ void searchBook(book *matchingBooks, int *matchCount) {
 void searchResult(book *matchingBooks, int *matchCount) {
     system("cls");
     printf("=====================================\n");
-    printf("       ~Hasil Pencarian Anda~       \n");
+    printf("        Hasil Pencarian Anda        \n");
     printf("=====================================\n");
     for (int i = 0; i < *matchCount; i++) {
         printf("Book ID: %s\n", matchingBooks[i].bookID);
