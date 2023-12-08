@@ -4,7 +4,7 @@
 
 int main() {
     Member member[10];
-    book books[100]; // Misalnya, batasi jumlah maksimum buku
+    book books[100];
     int choice;
     char choiceBook[7];
     int bookTotal = 0;
@@ -37,7 +37,6 @@ int main() {
                             scanf(" %6s", choiceBook);
 
                             checkBorrowBook(books, choiceBook, bookTotal);
-                            // printf("\n %s", member[0].userName);
                             doBorrowBook(choiceBook, userName);
                             break;
                         case 2:

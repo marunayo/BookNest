@@ -41,47 +41,6 @@ void displayBorrowBook() {
     printf("=====================================\n");
 }
 
-// User Modules
-//void registMember() {
-//    FILE *f_member;
-//    Member member;
-//
-//    system("cls");
-//
-//    if ((f_member = fopen("memberData.txt", "ab+")) == NULL) {
-//        fputs("File tidak dapat dibuka!", stderr);
-//        exit(1);
-//    }
-//
-//    printf("=====================================\n");
-//    printf("       MEMBER REGISTRATION FORM      \n");
-//    printf("=====================================\n");
-//
-//    printf("Username: ");
-//    scanf(" %s", member.userName);
-//    fflush(stdin);
-//
-//    printf("Password: ");
-//    scanf("%s", member.Password);
-//    fflush(stdin);
-//
-//    sprintf(member.idMember, "BK%i", memberCount);
-//    memberCount++;
-//    fflush(stdin);
-//    printf("%s", member.idMember);
-//
-//    if (fwrite(&member, sizeof(Member), 1, f_member) != 1) {
-//        printf("Error writing to the file\n");
-//        fclose(f_member);
-//        exit(1);
-//    }
-//
-//    fclose(f_member);
-//
-//    printf("\nRegistrasi Berhasil!\n");
-//    printf("Member ID kamu %s\n", member.idMember);
-//}
-
 // Book Modules
 void getBookCollection(book books[], int &bookTotal) {
     // Akses bookDB
@@ -92,7 +51,7 @@ void getBookCollection(book books[], int &bookTotal) {
     }
 
     // Membaca data sampai akhir file (EOF)
-    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']'", books[bookTotal].bookID, books[bookTotal].title, books[bookTotal].author) != EOF) {
+    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%c'", books[bookTotal].bookID, books[bookTotal].title, books[bookTotal].author, &books[bookTotal].status) != EOF) {
         bookTotal++;
 
         // Cek agar tidak melebihi kapasitas array
@@ -111,6 +70,11 @@ void showBookCollection(book books[], int bookTotal) {
         printf("ID\t: %s\n", books[i].bookID);
         printf("Judul\t: %s\n", books[i].title);
         printf("Penulis\t: %s\n", books[i].author);
+        if (books[i].status == '1') {
+            printf("Status\t: Tersedia");
+        } else {
+            printf("Status\t: Tidak Tersedia");
+        }
         printf("\n");
     }
 }
@@ -120,8 +84,12 @@ void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
     for (int i = 0; i < bookTotal; i++) {
         if (strcmp(choiceBook, books[i].bookID) == 0) {
             printf("Buku tersedia :D");
-            return;
-        } 
+            printf("\n %c", books->status);
+            if (books[i].status == '0') {
+                printf("\n Buku sudah terpinjam");
+                exit(0);
+            }
+        }
     }
 
     printf("Maaf, Buku kamu tidak tersedia :(");
@@ -130,17 +98,13 @@ void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
 void doBorrowBook(char *choiceBook, char *userName) {
     FILE *ft;
     FILE *ft_user;
+    FILE *bookDB = fopen("bookDB.txt", "r");
     char transactionID[10];
 
     if ((ft = fopen("transactions.txt", "a+")) == NULL) {
         fputs("File tidak dapat dibuka!", stderr);
         exit(1);
     }
-    // if ((ft_user = fopen("tramsactions.txt", "a+")) == NULL) {
-    //     fputs("File tidak dapat dibuka!", stderr);
-    //     exit(1);
-    // }
-
 
     sprintf(transactionID, "TRBK%05i", rand() % 100000);
     fflush(stdin);

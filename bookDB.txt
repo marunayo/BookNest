@@ -1,4 +1,4 @@
-'NVJP01' 'The Tunnel to Summer, The Exit of Goodbye' 'Mei Hachimoku'
-'PDID01' 'Atomic Habits' 'James Clear'
-'KNID01' 'Cara Untuk Bodo Amat' 'Author'
-'NVEN02' 'Eighty Six : Voume 1' 'Author'
+'NVJP01' 'The Tunnel to Summer, The Exit of Goodbye' 'Mei Hachimoku' '0'
+'PDID01' 'Atomic Habits' 'James Clear' '1'
+'KNID01' 'Cara Untuk Bodo Amat' 'Author' '1'
+'NVEN02' 'Eighty Six : Voume 1' 'Author' '1'
