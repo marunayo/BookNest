@@ -12,7 +12,7 @@ typedef struct
     char bookID[7];
     char title[50];
     char author[50];
-    char status;
+    char status[12];
 } book;
 
 typedef struct
@@ -41,6 +41,7 @@ void getBookCollection(book books[], int &bookTotal);
 void showBookCollection(book books[], int bookTotal);
 void checkBorrowBook(book books[], char *choiceBook, int bookTotal);
 void doBorrowBook(char *choiceBook, char *userName);
+void updateBookStatus(const char *bookID);
 float calculatePenalty(int days);
 void searchBook(book *matchingBooks, int *matchCount, const char *keyword);
 void searchResult(book *matchingBooks, int *matchCount);

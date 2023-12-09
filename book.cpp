@@ -15,7 +15,7 @@ void getBookCollection(book books[], int &bookTotal) {
     }
 
     // Membaca data sampai akhir file (EOF)
-    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%c'", books[bookTotal].bookID, books[bookTotal].title, books[bookTotal].author, &books[bookTotal].status) != EOF) {
+    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%[^']' ", books[bookTotal].bookID, books[bookTotal].title, books[bookTotal].author, books[bookTotal].status) != EOF) {
         bookTotal++;
 
         // Cek agar tidak melebihi kapasitas array
@@ -34,10 +34,10 @@ void showBookCollection(book books[], int bookTotal) {
         printf("ID\t: %s\n", books[i].bookID);
         printf("Judul\t: %s\n", books[i].title);
         printf("Penulis\t: %s\n", books[i].author);
-        if (books[i].status == '1') {
-            printf("Status\t: Tersedia");
-        } else {
+        if (strcmp(books[i].status, "Status 0") == 0) {
             printf("Status\t: Tidak Tersedia");
+        } else {
+            printf("Status\t: Tersedia");
         }
         printf("\n");
     }
@@ -48,15 +48,13 @@ void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
     for (int i = 0; i < bookTotal; i++) {
         if (strcmp(choiceBook, books[i].bookID) == 0) {
             printf("Buku tersedia :D");
-            printf("\n %c", books->status);
-            if (books[i].status == '0') {
+            // printf("\n %c", books->status);
+            if (strcmp(books[i].status, "Status 0") == 0) {
                 printf("\n Buku sudah terpinjam");
                 exit(0);
             }
         }
     }
-
-    printf("Maaf, Buku kamu tidak tersedia :(");
 }
 
 void doBorrowBook(char *choiceBook, char *userName) {
@@ -96,6 +94,29 @@ void doBorrowBook(char *choiceBook, char *userName) {
     printf("Transaction ID pinjam buku kamu %s\n", transactionID);
 }
 
+void updateBookStatus(const char *bookID) {
+    FILE *file = fopen("bookDB.txt", "r+");
+
+    if (file == NULL) {
+        fputs("File tidak dapat dibuka!", stderr);
+        exit(1);
+    }
+
+    book currentBook;
+    long currentPosition = 0;
+    while (fscanf(file, " '%6[^']' '%49[^']' '%49[^']' '%11[^']' ", currentBook.bookID, currentBook.title, currentBook.author, currentBook.status) == 4) {
+        if (strcmp(currentBook.bookID, bookID) == 0) {
+            fseek(file, currentPosition + (strlen(currentBook.bookID) + strlen(currentBook.title) + strlen(currentBook.author) + 10), SEEK_SET);
+            fprintf(file, " 'Status 0'");
+            break;
+        }
+        currentPosition = ftell(file);
+    }
+
+    fclose(file);
+}
+
+
 int containsIgnoreCase(const char *data, const char *keyword) {
     while (*data && *keyword) {
         if (tolower((unsigned char)*data) != tolower((unsigned char)*keyword)) {
@@ -125,7 +146,7 @@ void searchBook(book *matchingBooks, int *matchCount, const char *keyword) {
             strcpy(matchingBooks[*matchCount].bookID, Book.bookID);
             strcpy(matchingBooks[*matchCount].title, Book.title);
             strcpy(matchingBooks[*matchCount].author, Book.author);
-            matchingBooks[*matchCount].status = Book.status;
+            strcpy(matchingBooks[*matchCount].status, Book.status);
             (*matchCount)++;
         }
     }
@@ -138,7 +159,7 @@ void searchResult(book *matchingBooks, int *matchCount) {
         printf("ID Buku: %s\n", matchingBooks[i].bookID);
         printf("Judul: %s\n", matchingBooks[i].title);
         printf("Penulis: %s\n", matchingBooks[i].author);
-        if (matchingBooks[i].status == '1') {
+        if (strcmp(matchingBooks[i].status, "Status 0") != 0) {
             printf("Status\t: Tersedia");
         } else {
             printf("Status\t: Tidak Tersedia");
