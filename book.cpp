@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <ctype.h>
 #include "library.h"
-
-int memberCount = 1;
 
 // Book Modules
 void getBookCollection(book books[], int &bookTotal) {
@@ -56,6 +55,8 @@ void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
             }
         }
     }
+
+    printf("Maaf, Buku kamu tidak tersedia :(");
 }
 
 void doBorrowBook(char *choiceBook, char *userName) {
@@ -95,14 +96,21 @@ void doBorrowBook(char *choiceBook, char *userName) {
     printf("Transaction ID pinjam buku kamu %s\n", transactionID);
 }
 
-void searchBook() {
-    char keyword[50];
+int containsIgnoreCase(const char *data, const char *keyword) {
+    while (*data && *keyword) {
+        if (tolower((unsigned char)*data) != tolower((unsigned char)*keyword)) {
+            return 0;
+        }
+        data++;
+        keyword++;
+    }
+
+    return (*keyword == '\0');
+}
+
+void searchBook(book *matchingBooks, int *matchCount, const char *keyword) {
     FILE *bookDB;
     book Book;
-    book *matchingBooks;
-    int matchCount;
-
-    system("cls");
 
     bookDB = fopen("bookDB.txt", "r");
     if (bookDB == NULL) {
@@ -110,44 +118,39 @@ void searchBook() {
         return;
     }
 
-    printf("=====================================\n");
-    printf("       ~Cari Koleksi BookNest~       \n");
-    printf("=====================================\n");
-    printf("Masukkan kata kunci pencarian: ");
-    scanf(" %s", keyword);
-    fflush(stdin);
-
-    matchingBooks = (book *)calloc(100, sizeof(book));  // Adjust the size as needed
-    matchCount = 0;
-
-    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']'", Book.bookID, Book.title, Book.author) != EOF) {
-        if (strstr(keyword, Book.bookID) != NULL || strstr(keyword, Book.author) != NULL || strstr(keyword, Book.title) != NULL) {
-            strcpy(matchingBooks[matchCount].bookID, Book.bookID);
-            strcpy(matchingBooks[matchCount].title, Book.title);
-            strcpy(matchingBooks[matchCount].author, Book.author);
-            matchCount++;
+    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%c'", Book.bookID, Book.title, Book.author, &Book.status) != EOF) {
+        if (containsIgnoreCase(Book.bookID, keyword) ||
+            containsIgnoreCase(Book.title, keyword) ||
+            containsIgnoreCase(Book.author, keyword)) {
+            strcpy(matchingBooks[*matchCount].bookID, Book.bookID);
+            strcpy(matchingBooks[*matchCount].title, Book.title);
+            strcpy(matchingBooks[*matchCount].author, Book.author);
+            matchingBooks[*matchCount].status = Book.status;
+            (*matchCount)++;
         }
     }
-
     fclose(bookDB);
+}
 
-    printf("=====================================\n");
-    printf("        Hasil Pencarian Anda        \n");
-    printf("=====================================\n");
-    for (int i = 0; i < matchCount; i++) {
-        system("cls");
-        printf("Book ID: %s\n", matchingBooks[i].bookID);
-        printf("Title: %s\n", matchingBooks[i].title);
-        printf("Author: %s\n", matchingBooks[i].author);
-        printf("=====================================\n");
+void searchResult(book *matchingBooks, int *matchCount) {
+    system("cls");
+    for (int i = 0; i < *matchCount; i++) {
+        printf("ID Buku: %s\n", matchingBooks[i].bookID);
+        printf("Judul: %s\n", matchingBooks[i].title);
+        printf("Penulis: %s\n", matchingBooks[i].author);
+        if (matchingBooks[i].status == '1') {
+            printf("Status\t: Tersedia");
+        } else {
+            printf("Status\t: Tidak Tersedia");
+        }
     }
-
-    free(matchingBooks);
 }
 
 float calculatePenalty(int days) {
-	int i;
-	for(i = 0; i <= days; i++) {
-		return 1000 * i;
-	}
+    int i, penalty = 0;  // Initialize penalty
+    for (i = 0; i <= days; i++) {
+        penalty = penalty + (1000 * i);
+    }
+    return penalty;
 }
+

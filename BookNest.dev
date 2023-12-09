@@ -81,7 +81,17 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit4]
-FileName=memberController.cpp
+FileName=menu.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit5]
+FileName=member.cpp
 CompileCpp=1
 Folder=
 Compile=1
