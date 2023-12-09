@@ -15,6 +15,15 @@ typedef struct
     char status;
 } book;
 
+typedef struct
+{
+    char transactionID[10];
+    char userName[50];
+    char bookID[7];
+    char transactionDate[11];  // Format: yyyy-mm-dd
+    char dueDate[11];           // Format: yyyy-mm-dd
+} transaction;
+
 // Menu Modules
 void displayMainMenu();
 void displayHome();

@@ -27,6 +27,7 @@ bool checkPassword(char *password) {
     }
 }
 
+
 void registMember() {
     FILE *f_member;
     Member member, f_members;
@@ -85,7 +86,6 @@ void registMember() {
 
     fclose(f_member);
 }
-
 
 
 bool loginMember() {
