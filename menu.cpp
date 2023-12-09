@@ -24,3 +24,31 @@ void displayMainMenu() {
     printf("5. Keluar\n");
     printf("==============================\n");
 }
+
+void displayBookMenu() {
+    system("cls");
+    printf("=====================================\n");
+    printf("              CARI BUKU              \n");
+    printf("=====================================\n");
+}
+
+void displayBorrowBook() {
+    system("cls");
+    printf("=====================================\n");
+    printf("           PEMINJAMAN BUKU           \n");
+    printf("=====================================\n");
+}
+
+void displaySearchMenu() {
+    system("cls");
+    printf("=====================================\n");
+    printf("        Cari Koleksi BookNest        \n");
+    printf("=====================================\n");
+}
+
+void displaySearch() {
+    system("cls");
+    printf("=====================================\n");
+    printf("           HASIL PENCARIAN           \n");
+    printf("=====================================\n");
+}
