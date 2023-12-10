@@ -43,18 +43,19 @@ void showBookCollection(book books[], int bookTotal) {
     }
 }
 
-void checkBorrowBook(book books[], char *choiceBook, int bookTotal) {
-    // Checking if the bookID exist in DB
+int checkBorrowBook(book books[], const char *choiceBook, int bookTotal) {
     for (int i = 0; i < bookTotal; i++) {
         if (strcmp(choiceBook, books[i].bookID) == 0) {
-            printf("Buku tersedia :D");
-            // printf("\n %c", books->status);
             if (strcmp(books[i].status, "Status 0") == 0) {
-                printf("\n Buku sudah terpinjam");
-                exit(0);
+                printf("\n Buku sudah terpinjam \n");
+                return 0;
+            } else {
+                return 1;
             }
         }
     }
+    printf("\n Buku tidak ditemukan\n");
+    return 0;
 }
 
 void doBorrowBook(char *choiceBook, char *userName) {
@@ -83,13 +84,14 @@ void doBorrowBook(char *choiceBook, char *userName) {
     char dueDate[11];
     strftime(dueDate, 11, "%d-%m-%Y", localtime(&due_t));
 
-    sprintf(transactionID, "TRBK%05i", rand() % 100000);
+    sprintf(transactionID, "TRBK%05i", rand() %100000);
     fflush(stdin);
 
     fprintf(ft, "%s %s %s %s %s\n", transactionID, userName, choiceBook, transactionDate, dueDate);
 
     fclose(ft);
 
+    srand((unsigned int)time(NULL));
     printf("\nPinjam Buku Berhasil!\n");
     printf("Transaction ID pinjam buku kamu %s\n", transactionID);
 }
@@ -107,7 +109,7 @@ void updateBookStatus(const char *bookID) {
     while (fscanf(file, " '%6[^']' '%49[^']' '%49[^']' '%11[^']' ", currentBook.bookID, currentBook.title, currentBook.author, currentBook.status) == 4) {
         if (strcmp(currentBook.bookID, bookID) == 0) {
             fseek(file, currentPosition + (strlen(currentBook.bookID) + strlen(currentBook.title) + strlen(currentBook.author) + 10), SEEK_SET);
-            fprintf(file, " 'Status 0'");
+            fprintf(file, "Status 0");
             break;
         }
         currentPosition = ftell(file);
@@ -154,7 +156,6 @@ void searchBook(book *matchingBooks, int *matchCount, const char *keyword) {
 }
 
 void searchResult(book *matchingBooks, int *matchCount) {
-    system("cls");
     for (int i = 0; i < *matchCount; i++) {
         printf("ID Buku: %s\n", matchingBooks[i].bookID);
         printf("Judul: %s\n", matchingBooks[i].title);

@@ -39,7 +39,7 @@ bool loginMember();
 // Book Modules
 void getBookCollection(book books[], int &bookTotal);
 void showBookCollection(book books[], int bookTotal);
-void checkBorrowBook(book books[], char *choiceBook, int bookTotal);
+int checkBorrowBook(book books[], const char *choiceBook, int bookTotal);
 void doBorrowBook(char *choiceBook, char *userName);
 void updateBookStatus(const char *bookID);
 float calculatePenalty(int days);
