@@ -31,6 +31,7 @@ void displayBookMenu();
 void displayBorrowBook();
 void displaySearchMenu();
 void displaySearch();
+void displayReturnBook();
 
 // User Modules
 void registMember();
@@ -45,5 +46,6 @@ void updateBookStatus(const char *bookID);
 float calculatePenalty(int days);
 void searchBook(book *matchingBooks, int *matchCount, const char *keyword);
 void searchResult(book *matchingBooks, int *matchCount);
+void returnBook();
 
 #endif //BOOKNEST_LIBRARY_H

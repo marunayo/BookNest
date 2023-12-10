@@ -42,6 +42,8 @@ int main() {
                                 }
                                 break;
                             case 2:
+                                displayReturnBook();
+                                returnBook();
                                 break;
                             case 3:
                                 displaySearchMenu();

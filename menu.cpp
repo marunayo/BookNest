@@ -52,3 +52,10 @@ void displaySearch() {
     printf("           HASIL PENCARIAN           \n");
     printf("=====================================\n");
 }
+
+void displayReturnBook() {
+    system("cls");
+    printf("=====================================\n");
+    printf("          PENGEMBALIAN BUKU          \n");
+    printf("=====================================\n");
+}

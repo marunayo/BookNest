@@ -114,6 +114,7 @@ void updateBookStatus(const char *bookID) {
         }
         currentPosition = ftell(file);
     }
+    
 
     fclose(file);
 }
@@ -168,10 +169,120 @@ void searchResult(book *matchingBooks, int *matchCount) {
     }
 }
 
+void returnBook() {
+    FILE *receipt;
+    FILE *bookDB;
+    char input[10];
+    bool found = false;
+    transaction Trans;
+
+    if ((receipt = fopen("transactions.txt", "a+")) == NULL) {
+        fputs("File tidak dapat dibuka!", stderr);
+        exit(1);
+    }
+
+    bookDB = fopen("bookDB.txt", "r+");
+    if (bookDB == NULL) {
+        printf("Tidak dapat mengakses koleksi\n");
+        return;
+    }
+
+        system("cls");
+        printf("Masukkan ID transaksi anda: ");
+        scanf(" %s", input);
+
+        while (fscanf(receipt, "%s %s %s %s %s\n", Trans.transactionID, Trans.userName, Trans.bookID, Trans.transactionDate, Trans.dueDate) != EOF) {
+            if (strcmp(Trans.transactionID, input) == 0) {
+                printf("Transaksi ditemukan!\n");
+                printf("Detail Transaksi Anda:\n");
+                printf("ID Transaksi: %s\n", Trans.transactionID);
+                printf("Title: %s\n", Trans.userName);
+                printf("Author: %s\n", Trans.bookID);
+                printf("Transaction Date: %s\n", Trans.transactionDate);
+                printf("Due Date: %s\n", Trans.dueDate);
+                printf("=====================================\n");
+
+                found = true;
+                break;
+            }
+        }
+
+        if(found) {
+            // Get current date
+            time_t currentTime;
+            struct tm *tm_info;
+            time(&currentTime);
+            tm_info = localtime(&currentTime);
+            char returnDate[11];
+            strftime(returnDate, 11, "%d-%m-%Y", tm_info);
+
+            // Extract day, month, and year from returnDate and Trans.dueDate
+            int returnDay, returnMonth, returnYear;
+            sscanf(returnDate, "%d-%d-%d", &returnDay, &returnMonth, &returnYear);
+
+            int dueDay, dueMonth, dueYear;
+            sscanf(Trans.dueDate, "%d-%d-%d", &dueDay, &dueMonth, &dueYear);
+
+            // Convert to time_t for comparison
+            struct tm tm_returnDate = {0};
+            tm_returnDate.tm_mday = returnDay;
+            tm_returnDate.tm_mon = returnMonth - 1; // Month is zero-based
+            tm_returnDate.tm_year = returnYear - 1900; // Years since 1900
+            time_t returnDate_t = mktime(&tm_returnDate);
+
+            struct tm tm_dueDate = {0};
+            tm_dueDate.tm_mday = dueDay;
+            tm_dueDate.tm_mon = dueMonth - 1; // Month is zero-based
+            tm_dueDate.tm_year = dueYear - 1900; // Years since 1900
+            time_t dueDate_t = mktime(&tm_dueDate);
+
+            // Calculate days overdue
+            int daysOverdue = (returnDate_t - dueDate_t) / (60 * 60 * 24);
+            daysOverdue = (daysOverdue < 0) ? 0 : daysOverdue;
+                
+            float penalty = calculatePenalty(daysOverdue);
+            system("cls");
+            printf("Hari telat: %d\n", daysOverdue);
+            printf("Denda yang harus dibayarkan: Rp.%.2f\n", penalty);
+            
+            
+            char paymentConfirmation;
+            printf("Konfirmasi pembayaran (Y/N): ");
+            scanf(" %c", &paymentConfirmation);
+
+            if (paymentConfirmation == 'Y' || paymentConfirmation == 'y') {
+                system("cls");
+
+                book currentBook;
+                long currentPosition = 0;
+                while (fscanf(bookDB, " '%6[^']' '%49[^']' '%49[^']' '%11[^']' ", currentBook.bookID, currentBook.title, currentBook.author, currentBook.status) == 4) {
+                    if (strcmp(currentBook.bookID, Trans.bookID) == 0) {
+                        fseek(bookDB, currentPosition + (strlen(currentBook.bookID) + strlen(currentBook.title) + strlen(currentBook.author) + 10), SEEK_SET);
+                        fprintf(bookDB, "Status 1");
+
+                        printf("Pembayaran berhasil!\n\n");
+                        fclose(bookDB); // Close the bookDB file after successful payment
+                        fclose(receipt);
+                    }
+                    currentPosition = ftell(bookDB);
+                }
+                if (strcmp(currentBook.bookID, Trans.bookID) != 0) {
+                    printf("Buku tidak ditemukan dalam database!\n\n");
+                    fclose(bookDB);
+                }
+            } else {
+                printf("Pembayaran dibatalkan.\n");
+            }
+        } else {
+            printf("Transaksi tidak ditemukan!\n");
+        }
+    fclose(receipt);
+}
+
 float calculatePenalty(int days) {
     int i, penalty = 0;  // Initialize penalty
-    for (i = 0; i <= days; i++) {
-        penalty = penalty + (1000 * i);
+    for (i = 0; i < days; i++) {
+        penalty = penalty + 1000;
     }
     return penalty;
 }
