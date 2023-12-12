@@ -91,6 +91,7 @@ bool loginMember(char *userName) {
     FILE *f_member;
     Member member, input;
     bool found;
+    char choice;
 
     if ((f_member = fopen("memberData.txt", "r")) == NULL) {
         fputs("File tidak dapat dibuka!", stderr);
@@ -128,7 +129,6 @@ bool loginMember(char *userName) {
         } else {
             printf("\nTerjadi kesalahan\nTolong periksa inputan anda!\n");
 
-            char choice;
             printf("Apakah Anda ingin mencoba lagi? (Y/N): ");
             scanf(" %c", &choice);
 

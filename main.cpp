@@ -4,8 +4,10 @@
 
 int main() {
     book books[100], *Book = NULL;
-    int choice, matchCount, bookTotal = 0;
-    char menu, choiceBook[7], userName[10], keyword[50];
+    long daysOverdue;
+    int choice, penalty = 0, matchCount, bookTotal = 0;
+    char menu, choiceBook[7], userName[10], keyword[50], transID[10];
+    transaction Trans;
 
     Book = (book *)calloc(100, sizeof(book)); 
     matchCount = 0;
@@ -43,7 +45,20 @@ int main() {
                                 break;
                             case 2:
                                 displayReturnBook();
-                                returnBook();
+                                printf("Masukkan ID transaksi anda: ");
+                                scanf(" %s", transID);
+                                if(checkTransaction(transID, &Trans)) {
+                                    showDetailTransaction(&Trans);
+                                	daysOverdue = calculateOverdue(&Trans);
+                                	if(daysOverdue > 0) {
+                                		penalty = calculatePenalty(daysOverdue);
+									}
+                                    returnBook(daysOverdue, penalty, &Trans);
+                                    updateBook(books, bookTotal, &Trans);
+                                    printf("Transaksi berhasil!\n");
+                                } else {
+                                    printf("Transaksi tidak ditemukan!\n");
+                                }
                                 break;
                             case 3:
                                 displaySearchMenu();
