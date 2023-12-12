@@ -20,10 +20,10 @@ bool checkPassword(char *password) {
         if (password[i] >= '0' && password[i] <= '9') ++digit_count;
     }
 
-    if (length < 1 || length > 8) {
-        return false;
-    } else if (lower_case_count > 0 && upper_case_count > 0 && digit_count > 0) {
+    if (length >= 8 && lower_case_count > 0 && upper_case_count > 0 && digit_count > 0) {
         return true;
+    } else {
+        return false;
     }
 }
 
@@ -49,14 +49,13 @@ void registMember() {
         scanf(" %s", member.userName);
         fflush(stdin);
 
-        printf("\n");
-        printf("Password: ");
+        printf("Password (panjang 1-8 karakter, minimal 1 kapital, 1 kecil, dan 1 angka): ");
 
-        fgets(member.Password, 9, stdin);
-        fflush(stdin);
+        scanf(" %s", member.Password);
+        while (getchar() != '\n');
 
         srand ( time(NULL) );
-        sprintf(member.idMember, "BK%i", rand()%100);
+        sprintf(member.idMember, "BK%i", rand() %100);
 
         if(checkPassword(member.Password)) {
             fseek(f_member, 0, SEEK_SET);
