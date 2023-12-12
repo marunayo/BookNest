@@ -96,7 +96,7 @@ void doBorrowBook(char *choiceBook, char *userName) {
     printf("Transaction ID pinjam buku kamu %s\n", transactionID);
 }
 
-void updateBookStatus(const char *bookID) {
+void updateBookStatus(book books[], int bookTotal, const char *bookID) {
     FILE *file = fopen("bookDB.txt", "r+");
 
     if (file == NULL) {
@@ -114,7 +114,12 @@ void updateBookStatus(const char *bookID) {
         }
         currentPosition = ftell(file);
     }
-    
+
+    for (int i = 0; i < bookTotal; i++) {
+        if (strcmp(bookID, books[i].bookID) == 0) {
+            strcpy(books[i].status, "Status 0");
+        }
+    }
 
     fclose(file);
 }

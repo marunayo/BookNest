@@ -5,7 +5,7 @@
 int main() {
     book books[100], *Book = NULL;
     int choice, matchCount, bookTotal = 0;
-    char menu, choiceBook[7], userName[10] = "Raihan", keyword[50];
+    char menu, choiceBook[7], userName[10], keyword[50];
 
     Book = (book *)calloc(100, sizeof(book)); 
     matchCount = 0;
@@ -22,7 +22,7 @@ int main() {
                 registMember();
                 break;
             case 2:
-                if (loginMember()) {
+                if (loginMember(userName)) {
                     do {
                         displayMainMenu();
                         printf("Silahkan pilih opsi 1-4: ");
@@ -38,7 +38,7 @@ int main() {
 
                                 if (checkBorrowBook(books, choiceBook, bookTotal)) {
                                     doBorrowBook(choiceBook, userName);
-                                    updateBookStatus(choiceBook);
+                                    updateBookStatus(books, bookTotal, choiceBook);
                                 }
                                 break;
                             case 2:

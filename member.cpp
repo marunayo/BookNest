@@ -88,7 +88,7 @@ void registMember() {
 }
 
 
-bool loginMember() {
+bool loginMember(char *userName) {
     FILE *f_member;
     Member member, input;
     bool found;
@@ -117,6 +117,7 @@ bool loginMember() {
 
         while (fscanf(f_member, " %s %s %s", member.idMember, member.userName, member.Password) != EOF) {
             if (strcmp(input.userName, member.userName) == 0 && strcmp(input.Password, member.Password) == 0) {
+                strcpy(userName, input.userName);
                 printf("\nBerhasil masuk!\n");
                 found = true;
                 break;

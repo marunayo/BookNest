@@ -35,14 +35,14 @@ void displayReturnBook();
 
 // User Modules
 void registMember();
-bool loginMember();
+bool loginMember(char *userName);
 
 // Book Modules
 void getBookCollection(book books[], int &bookTotal);
 void showBookCollection(book books[], int bookTotal);
 int checkBorrowBook(book books[], const char *choiceBook, int bookTotal);
 void doBorrowBook(char *choiceBook, char *userName);
-void updateBookStatus(const char *bookID);
+void updateBookStatus(book books[], int bookTotal, const char *bookID);
 float calculatePenalty(int days);
 void searchBook(book *matchingBooks, int *matchCount, const char *keyword);
 void searchResult(book *matchingBooks, int *matchCount);
