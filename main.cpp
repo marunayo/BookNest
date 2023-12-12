@@ -11,11 +11,11 @@ int main() {
 
     Book = (book *)calloc(100, sizeof(book)); 
     matchCount = 0;
+    getBookCollection(books, bookTotal);
     for (;;) {
         system("cls");
         
         displayHome();
-        getBookCollection(books, bookTotal);
         printf("Silahkan pilih opsi 1-3: ");
         scanf(" %d", &choice);
 

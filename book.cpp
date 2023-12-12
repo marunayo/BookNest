@@ -148,7 +148,8 @@ void searchBook(book *matchingBooks, int *matchCount, const char *keyword) {
         return;
     }
 
-    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%c'", Book.bookID, Book.title, Book.author, &Book.status) != EOF) {
+    while (fscanf(bookDB, " '%[^']' '%[^']' '%[^']' '%[^']'", Book.bookID, Book.title, Book.author, &Book.status) != EOF) {
+        printf("%s, %s, %s, %s", Book.bookID, Book.title, Book.author, Book.status);
         if (containsIgnoreCase(Book.bookID, keyword) ||
             containsIgnoreCase(Book.title, keyword) ||
             containsIgnoreCase(Book.author, keyword)) {
@@ -167,10 +168,10 @@ void searchResult(book *matchingBooks, int *matchCount) {
         printf("ID Buku: %s\n", matchingBooks[i].bookID);
         printf("Judul: %s\n", matchingBooks[i].title);
         printf("Penulis: %s\n", matchingBooks[i].author);
-        if (strcmp(matchingBooks[i].status, "Status 0") != 0) {
-            printf("Status\t: Tersedia");
+        if (strcmp(matchingBooks[i].status, "Status 0") == 0) {
+            printf("Status\t: Tidak Tersedia\n\n");
         } else {
-            printf("Status\t: Tidak Tersedia");
+            printf("Status\t: Tersedia\n\n");
         }
     }
 }
@@ -233,11 +234,12 @@ long calculateOverdue(transaction *Trans) {
 
     // Calculate days overdue
     daysOverdue = (returnDate_t - dueDate_t) / (60 * 60 * 24);
-    return daysOverdue * -1;
+    daysOverdue = (daysOverdue < 0) ? 0 : daysOverdue;
+    return daysOverdue;
 }
 
 float calculatePenalty(int days) {
-	return -1000 * days;
+	return 1000 * days;
 }
 
 void updateBook(book books[], int bookTotal, transaction *Trans) {
@@ -251,6 +253,9 @@ void updateBook(book books[], int bookTotal, transaction *Trans) {
 void returnBook(long daysOverdue, float penalty, transaction *Trans) {
     FILE *bookDB;
     char paymentConfirmation;
+    char line[256]; // Adjust the size as needed
+    long currentPosition;
+    int found = 0;
 
     bookDB = fopen("bookDB.txt", "r+");
     if (bookDB == NULL) {
@@ -267,10 +272,7 @@ void returnBook(long daysOverdue, float penalty, transaction *Trans) {
     if (paymentConfirmation == 'Y' || paymentConfirmation == 'y') {
         system("cls");
 
-        char line[256]; // Adjust the size as needed
-        long currentPosition = 0;
-        int found = 0;
-
+        currentPosition = 0;
         while (fgets(line, sizeof(line), bookDB) != NULL) {
             book currentBook;
             sscanf(line, " '%6[^']' '%49[^']' '%49[^']' '%11[^']' ", currentBook.bookID, currentBook.title, currentBook.author, currentBook.status);
